@@ -24,7 +24,7 @@ Roti Sri Bakery Inventory System is a comprehensive stock management solution de
 **Register**
 ![Image](https://github.com/user-attachments/assets/ceb58fa6-79a1-4e5e-9090-0e4da17580c8)
 **Dashboard**
-![Image](https://github.com/user-attachments/assets/1c658fee-66e7-4a8e-ab8e-e7e1bbd0d5b8)
+![Image](https://github.com/user-attachments/assets/60fbcd5e-9853-4915-a8b7-c09d3c45e0c6)
 **Manage Ingredients Stock-IN**
 ![Image](https://github.com/user-attachments/assets/7fefe48f-24c1-45ee-8dbc-bf38c29fd1ab)
 **Manage Ingredients Stock-OUT**
