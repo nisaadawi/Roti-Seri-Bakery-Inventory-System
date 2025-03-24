@@ -3,7 +3,7 @@ An Inventory System for Bakery
 ![Image](https://github.com/user-attachments/assets/4ddcddc7-bd10-45b5-a395-65fffcb7654f)
 ### About Roti Sri Bakery Inventory System
 
-Roti Sri Bakery Inventory System is a comprehensive stock management solution designed to streamline bakery operations. It enables efficient stock check-in and check-out, real-time stock tracking, and supplier management to ensure a steady supply of ingredients. The system also includes order tracking for ingredients and sales data monitoring, helping the bakery maintain optimal inventory levels and improve business efficiency. This system required 2 type of user which are Inventory Supervisor and Employee. Inventory Supervisor are responsible in managaging the stock and has the access to all CRUD funcrions. Meanwhile the employee also allow to work with certain CRUD function to maintiain the system realiability and privacy.
+Roti Sri Bakery Inventory System is a comprehensive stock management solution designed to streamline bakery operations maainlu using PHP and PhPMyAdmin. It enables efficient stock check-in and check-out, real-time stock tracking, and supplier management to ensure a steady supply of ingredients. The system also includes order tracking for ingredients and sales data monitoring, helping the bakery maintain optimal inventory levels and improve business efficiency. This system required 2 type of user which are Inventory Supervisor and Employee. Inventory Supervisor are responsible in managaging the stock and has the access to all CRUD funcrions. Meanwhile the employee also allow to work with certain CRUD function to maintiain the system realiability and privacy.
 
 ### Available Features:
 
