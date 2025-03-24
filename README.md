@@ -1,2 +1,2 @@
-# inventory-sw
-inventory system 
+# Roti Sri Bakery Inventory System
+inventory system for Bakery 
