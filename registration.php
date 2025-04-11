@@ -1,5 +1,4 @@
 <?php
-
 error_reporting(E_ALL);
 include('includes/dbconnection.php');
 require "vendor/autoload.php";
@@ -36,86 +35,93 @@ if (isset($_POST['submit'])) {
                 echo '<script>alert("Email already exists. Please try with a different email.")</script>';
             } else {
                 // If email not yet exist, proceed with registration
-
                 $email = $_POST['email'];
                 
-                    // Add insert query here
-                    $sqlInsert = "INSERT INTO users (fullname, contact, email, password, type) VALUES (:fullname, :contact, :email, :password, :type)";
-                    $queryInsert = $dbh->prepare($sqlInsert);
-                    $queryInsert->bindParam(':fullname', $fullname, PDO::PARAM_STR);
-                    $queryInsert->bindParam(':contact', $contact, PDO::PARAM_STR);
-                    $queryInsert->bindParam(':email', $email, PDO::PARAM_STR);
-                    $queryInsert->bindParam(':password', $password, PDO::PARAM_STR);
-                    $queryInsert->bindParam(':type', $type, PDO::PARAM_INT);
-                    $queryInsert->execute();
-                    // // Generate OTP
-                    $otp = rand(100000, 999999);  // Generate a 6-digit OTP
+                // Add insert query here
+                $sqlInsert = "INSERT INTO users (fullname, contact, email, password, type) VALUES (:fullname, :contact, :email, :password, :type)";
+                $queryInsert = $dbh->prepare($sqlInsert);
+                $queryInsert->bindParam(':fullname', $fullname, PDO::PARAM_STR);
+                $queryInsert->bindParam(':contact', $contact, PDO::PARAM_STR);
+                $queryInsert->bindParam(':email', $email, PDO::PARAM_STR);
+                $queryInsert->bindParam(':password', $password, PDO::PARAM_STR);
+                $queryInsert->bindParam(':type', $type, PDO::PARAM_INT);
+                $queryInsert->execute();
+                
+                // Generate OTP
+                $otp = rand(100000, 999999);  // Generate a 6-digit OTP
 
-                    // Store the OTP in the session
-                    $sqlOtpInsert = "UPDATE users SET otp = :otp WHERE email = :email";
-                    $queryOtpInsert = $dbh->prepare($sqlOtpInsert);
-                    $queryOtpInsert->bindParam(':otp', $otp, PDO::PARAM_STR);
-                    $queryOtpInsert->bindParam(':email', $email, PDO::PARAM_STR);
-                    $queryOtpInsert->execute();
+                // Store the OTP in the session
+                $sqlOtpInsert = "UPDATE users SET otp = :otp WHERE email = :email";
+                $queryOtpInsert = $dbh->prepare($sqlOtpInsert);
+                $queryOtpInsert->bindParam(':otp', $otp, PDO::PARAM_STR);
+                $queryOtpInsert->bindParam(':email', $email, PDO::PARAM_STR);
+                $queryOtpInsert->execute();
 
-                    // Send OTP to the user
-                    $mail = new PHPMailer(true);
-                    $mail->isSMTP();
-                    $mail->SMTPAuth = true;
-                    $mail->Host = "smtp.gmail.com";
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                    $mail->Port = 587;
+                // Send OTP to the user
+                $mail = new PHPMailer(true);
+                $mail->isSMTP();
+                $mail->SMTPAuth = true;
+                $mail->Host = "smtp.gmail.com";
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
 
-                    $mail->Username = "eazysurvey123@gmail.com";
-                    $mail->Password = "cqlprqrgtttssphq";
+                $mail->Username = "eazysurvey123@gmail.com";
+                $mail->Password = "cqlprqrgtttssphq";
 
-                    $mail->setFrom("eazysurvey123@gmail.com", "Roti Sri Bakery | Inventory System");
-                    $mail->addAddress($email, $fullname);
+                $mail->setFrom("eazysurvey123@gmail.com", "Roti Sri Bakery | Inventory System");
+                $mail->addAddress($email, $fullname);
 
-                    $mail->Subject = "Your OTP for Roti Sri Bakery Inventory Registration";
-                    $mail->Body = "Dear $fullname,
+                $mail->Subject = "Your OTP for Roti Sri Bakery Inventory Registration";
+                $mail->Body = "Dear $fullname,
 
-        Please use the following OTP to complete your registration: $otp
+Please use the following OTP to complete your registration: $otp
 
-        Best regards,
-        Roti Sri Bakery Team";
+Best regards,
+Roti Sri Bakery Team";
 
-                    if ($mail->send()) {
-                        echo '<script>alert("OTP has been sent to your email. Please check your inbox.")</script>';
-                        echo "<script>window.location.href = 'otp_verification.php';</script>";
-                    } else {
-                        echo '<script>alert("Error in sending OTP. Please try again.")</script>';
-                    }
-                } 
-            }catch (Exception $e) {
-                echo "Error: " . $e->getMessage();
-            }
+                if ($mail->send()) {
+                    echo '<script>alert("OTP has been sent to your email. Please check your inbox.")</script>';
+                    echo "<script>window.location.href = 'otp_verification.php';</script>";
+                } else {
+                    echo '<script>alert("Error in sending OTP. Please try again.")</script>';
+                }
+            } 
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
         }
     }
-
+}
 ?>
 
 <!doctype html>
 <html>
-
 <head>
-    <title>Registration | RSB Inventory System </title>
+    <title>Registration | RSB Inventory System</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
+    <!-- Load jQuery from CDN with fallback -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        if (typeof jQuery == 'undefined') {
+            document.write('<script src="js/jquery-1.11.0.min.js"><\/script>');
+        }
+    </script>
 
-    <script type="application/x-javascript">
-        addEventListener("load", function() {
-            setTimeout(hideURLbar, 0);
-        }, false);
-
+    <script>
         function hideURLbar() {
             window.scrollTo(0, 1);
         }
+        window.addEventListener("load", function() {
+            setTimeout(hideURLbar, 0);
+        }, false);
     </script>
-    <!--bootstrap-->
+    
+    <!-- Bootstrap CSS -->
     <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all">
-    <!--coustom css-->
+    <!-- Custom CSS -->
     <link href="css/style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="images/icon.png" type="image/icon type">
+    
     <style>
         #passwordStrength {
             font-size: 11px;
@@ -124,20 +130,15 @@ if (isset($_POST['submit'])) {
 
         #passwordInfoIcon {
             font-size: 14px;
-            /* Adjust icon size */
             vertical-align: middle;
-            /* Align with text */
         }
 
         #passwordInfoIcon:hover {
             color: #0056b3;
-            /* Darker blue on hover for better accessibility */
         }
 
-        /* Tooltip styles for the password requirements */
         #passwordRequirements {
             display: none;
-            /* Initially hidden */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             font-size: 14px;
             width: 200px;
@@ -145,45 +146,20 @@ if (isset($_POST['submit'])) {
         }
 
         .contact-info {
-            margin-bottom: 10px; /* Adjusted margin to move text closer to the form */
+            margin-bottom: 10px;
         }
         .contact-grids {
-            margin-top: 0; /* Remove top margin to move form closer to the text */
+            margin-top: 0;
         }
     </style>
-    <!--script-->
-    <script src="js/jquery-1.11.0.min.js"></script>
-    <!-- js -->
+    
+    <!-- Load other scripts after jQuery -->
     <script src="js/bootstrap.js"></script>
-   
-    <!--fonts-->
+    <script src="js/move-top.js"></script>
+    <script src="js/easing.js"></script>
+    
+    <!-- Google Fonts -->
     <link href='//fonts.googleapis.com/css?family=Open+Sans:300,300italic,400italic,400,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
-    <!--/fonts-->
-    <script type="text/javascript" src="js/move-top.js"></script>
-    <script type="text/javascript" src="js/easing.js"></script>
-    <!--script-->
-    <script type="text/javascript">
-        jQuery(document).ready(function($) {
-            $(".scroll").click(function(event) {
-                event.preventDefault();
-                $('html,body').animate({
-                    scrollTop: $(this.hash).offset().top
-                }, 900);
-            });
-        });
-    </script>
-    <!--/script-->
-    <script>
-        function validatePassword() {
-            var password = document.getElementById("password");
-            var confirmPassword = document.getElementById("confirmPassword");
-            if (password.value != confirmPassword.value) {
-                confirmPassword.setCustomValidity("Passwords do not match");
-            } else {
-                confirmPassword.setCustomValidity('');
-            }
-        }
-    </script>
 </head>
 
 <body>
@@ -196,9 +172,9 @@ if (isset($_POST['submit'])) {
         </div>
     </div>
     <!--header-->
+    
     <!-- contact -->
     <div class="contact">
-        <!-- container -->
         <div class="container">
             <div class="contact-info">
                 <h3 class="c-text">Register Here</h3>
@@ -209,69 +185,49 @@ if (isset($_POST['submit'])) {
 
                     <div class="form-group">
                         <label for="exampleInputName1">Full Name</label>
-                        <input
-                            style="width:50%;"
-                            type="text"
-                            id="fullname"
-                            name="fullname"
-                            class="form-control"
-                            required
+                        <input style="width:50%;" type="text" id="fullname" name="fullname" class="form-control" required
                             pattern="^[A-Za-z\s@]+$"
                             title="Name should only contain letters and spaces (also '@' symbol, if applicable). No other special characters or numbers allowed.">
                     </div>
+                    
                     <div class="form-group">
                         <label for="exampleInputName1">Contact Number</label>
-                        <input
-                            style="width:50%;"
-                            type="text"
-                            name="contact"
-                            value=""
-                            class="form-control"
+                        <input style="width:50%;" type="text" name="contact" class="form-control"
                             pattern="^\d{10,15}$"
                             title="Please enter a valid phone number (10-15 digits)."
-                            required='true'>
+                            required>
                     </div>
 
                     <div class="form-group">
                         <label for="exampleInputName1">Role</label>
-                        <select style="width:50%;" name="type" value="" class="form-control" required='true'>
+                        <select style="width:50%;" name="type" class="form-control" required>
                             <option value="">Choose your Role</option>
                             <option value="2">Inventory Supervisor</option>
                             <option value="3">Clerk</option>
                         </select>
                     </div>
-                    <!-- <h3>Login details</h3> -->
+                    
                     <div class="form-group">
                         <label for="exampleInputName1">Email</label>
-                        <input style="width:50%;" type="text" name="email" id="email" class="form-control" required='true'>
+                        <input style="width:50%;" type="text" name="email" id="email" class="form-control" required>
                     </div>
+                    
                     <div class="form-group" style="position: relative; width: 50%; margin-bottom: 10px;">
                         <label for="password" style="min-width: 100px;">
                             Password
-                            <i
-                                id="passwordInfoIcon"
-                                class="fa fa-info-circle"
-                                style="color: #007bff; cursor: pointer; margin-left: 5px;"
+                            <i id="passwordInfoIcon" class="fa fa-info-circle" style="color: #007bff; cursor: pointer; margin-left: 5px;"
                                 onclick="togglePasswordRequirements()"></i>
                         </label>
-                        <input
-                            style="width: 100%; padding-right: 40px;"
-                            type="password"
-                            name="password"
-                            id="password"
-                            class="form-control"
-                            required
+                        <input style="width: 100%; padding-right: 40px;" type="password" name="password" id="password" class="form-control" required
                             oninput="validatePassword()">
                         <span id="togglePassword" style="position: absolute; top: 75%; right: 10px; transform: translateY(-50%); cursor: pointer;">
                             <i class="fa fa-eye"></i>
                         </span>
                         <span id="passwordStrength" style="position: absolute; top: 75%; left: calc(100% + 10px); transform: translateY(-50%);"></span>
 
-                        <!-- Password requirements displayed on click -->
                         <div id="passwordRequirements" style="display: none; position: absolute; top: 100%; left: 0; background: #f8f9fa; border: 1px solid #ddd; padding: 10px; border-radius: 5px; font-size: 12px; z-index: 10;">
                             <p style="font-weight: bold; margin: 0 0 10px 0;">Password must contain:-</p>
                             <ul style="list-style-type: disc; padding-left: 20px; margin: 0;">
-
                                 <li>At least 8 characters</li>
                                 <li>1 uppercase letter</li>
                                 <li>1 lowercase letter</li>
@@ -280,17 +236,10 @@ if (isset($_POST['submit'])) {
                             </ul>
                         </div>
                     </div>
+                    
                     <div class="form-group" style="position: relative; width: 50%; margin-bottom: 10px;">
-                        <label for="confirmPassword" style="min-width: 100px;">
-                            Re-enter Password
-                        </label>
-                        <input
-                            style="width: 100%; padding-right: 40px;"
-                            type="password"
-                            name="confirmPassword"
-                            id="confirmPassword"
-                            class="form-control"
-                            required
+                        <label for="confirmPassword" style="min-width: 100px;">Re-enter Password</label>
+                        <input style="width: 100%; padding-right: 40px;" type="password" name="confirmPassword" id="confirmPassword" class="form-control" required
                             oninput="validatePassword()">
                         <span id="toggleConfirmPassword" style="position: absolute; top: 75%; right: 10px; transform: translateY(-50%); cursor: pointer;">
                             <i class="fa fa-eye"></i>
@@ -299,111 +248,131 @@ if (isset($_POST['submit'])) {
 
                     <button type="submit" class="btn btn-primary mr-2" name="submit" id="submitButton" disabled>Register</button>
 
-                    <div class="clearfix"> </div>
+                    <div class="clearfix"></div>
+                </form>
             </div>
         </div>
-        <!-- //container -->
     </div>
     <!-- //contact -->
+    
     <?php include_once('includes/footer.php'); ?>
+    
     <script>
-        const password = document.querySelector("#password");
-        const confirmPassword = document.querySelector("#confirmPassword");
-        const togglePassword = document.querySelector("#togglePassword");
-        const toggleConfirmPassword = document.querySelector("#toggleConfirmPassword");
-        const passwordStrength = document.querySelector("#passwordStrength");
-        const passwordMatch = document.querySelector("#passwordMatch");
-        const submitButton = document.querySelector("#submitButton");
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const password = document.querySelector("#password");
+            const confirmPassword = document.querySelector("#confirmPassword");
+            const togglePassword = document.querySelector("#togglePassword");
+            const toggleConfirmPassword = document.querySelector("#toggleConfirmPassword");
+            const passwordStrength = document.querySelector("#passwordStrength");
+            const submitButton = document.querySelector("#submitButton");
 
-        // Toggle password visibility
-        togglePassword.addEventListener("click", function() {
-            const type = password.getAttribute("type") === "password" ? "text" : "password";
-            password.setAttribute("type", type);
-            this.innerHTML = type === "password" ? '<i class="fa fa-eye"></i>' : '<i class="fa fa-eye-slash"></i>';
-        });
-
-        // Toggle confirm password visibility
-        toggleConfirmPassword.addEventListener("click", function() {
-            const type = confirmPassword.getAttribute("type") === "password" ? "text" : "password";
-            confirmPassword.setAttribute("type", type);
-            this.innerHTML = type === "password" ? '<i class="fa fa-eye"></i>' : '<i class="fa fa-eye-slash"></i>';
-        });
-
-        // Check password strength
-        password.addEventListener("input", function() {
-            const value = password.value;
-            let strength = "";
-                
-            if (/[|&;"<>()+{}]/.test(value)) {
-                // alert("Password contains invalid characters. Please enter a valid password.");
-                strength = "Invalid";
-                passwordStrength.style.color = "red";
-                submitButton.disabled = true; // Disable submit button
-            } else if (value.length < 6) {
-                strength = "Weak";
-                passwordStrength.style.color = "red";
-                submitButton.disabled = true; // Disable submit button
-            } else if (value.length >= 6 && /[A-Z]/.test(value) && /[0-9]/.test(value) && /[@$!%*?&_]/.test(value)) {
-                strength = "Strong";
-                passwordStrength.style.color = "green";
-                submitButton.disabled = false; // Enable submit button
-            } else {
-                strength = "Medium";
-                passwordStrength.style.color = "orange";
-                submitButton.disabled = true; // Disable submit button
+            // Toggle password visibility
+            if (togglePassword) {
+                togglePassword.addEventListener("click", function() {
+                    const type = password.getAttribute("type") === "password" ? "text" : "password";
+                    password.setAttribute("type", type);
+                    this.innerHTML = type === "password" ? '<i class="fa fa-eye"></i>' : '<i class="fa fa-eye-slash"></i>';
+                });
             }
 
-            passwordStrength.textContent = `Password Strength: ${strength}`;
-        });
+            // Toggle confirm password visibility
+            if (toggleConfirmPassword) {
+                toggleConfirmPassword.addEventListener("click", function() {
+                    const type = confirmPassword.getAttribute("type") === "password" ? "text" : "password";
+                    confirmPassword.setAttribute("type", type);
+                    this.innerHTML = type === "password" ? '<i class="fa fa-eye"></i>' : '<i class="fa fa-eye-slash"></i>';
+                });
+            }
 
-        // Check if passwords match
-        confirmPassword.addEventListener("input", function() {
-            if (password.value !== confirmPassword.value) {
-                passwordMatch.textContent = "Passwords do not match";
-                passwordMatch.style.color = "red";
-                submitButton.disabled = true; // Disable submit button
-            } else {
-                passwordMatch.textContent = "Passwords match";
-                passwordMatch.style.color = "green";
-                submitButton.disabled = false; // Enable submit button if strength is strong
+            // Check password strength
+            if (password) {
+                password.addEventListener("input", function() {
+                    const value = password.value;
+                    let strength = "";
+                        
+                    if (/[|&;"<>()+{}]/.test(value)) {
+                        strength = "Invalid";
+                        passwordStrength.style.color = "red";
+                        submitButton.disabled = true;
+                    } else if (value.length < 6) {
+                        strength = "Weak";
+                        passwordStrength.style.color = "red";
+                        submitButton.disabled = true;
+                    } else if (value.length >= 6 && /[A-Z]/.test(value) && /[0-9]/.test(value) && /[@$!%*?&_]/.test(value)) {
+                        strength = "Strong";
+                        passwordStrength.style.color = "green";
+                        submitButton.disabled = false;
+                    } else {
+                        strength = "Medium";
+                        passwordStrength.style.color = "orange";
+                        submitButton.disabled = true;
+                    }
+
+                    passwordStrength.textContent = `Password Strength: ${strength}`;
+                });
+            }
+
+            // Check if passwords match
+            if (confirmPassword) {
+                confirmPassword.addEventListener("input", function() {
+                    if (password.value !== confirmPassword.value) {
+                        submitButton.disabled = true;
+                    } else {
+                        submitButton.disabled = false;
+                    }
+                });
+            }
+
+            // Validate email format
+            window.validateEmail = function() {
+                const email = document.querySelector("#email").value;
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(email)) {
+                    alert("Invalid email format. Please enter a valid email address.");
+                    return false;
+                }
+                return true;
+            }
+
+            // Form submission validation
+            const form = document.querySelector("form");
+            if (form) {
+                form.addEventListener("submit", function(event) {
+                    const password = document.querySelector("#password").value;
+                    const passwordStrength = document.querySelector("#passwordStrength").textContent;
+
+                    if (!(/[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password) && /[@$!%*?&_]/.test(password) && password.length >= 8)) {
+                        alert("Password must meet all the requirements listed. Click blue icon to view requirements.");
+                        event.preventDefault();
+                    } else if (passwordStrength.includes("Weak") || passwordStrength.includes("Medium")) {
+                        alert("Password must be 'Strong' to proceed.");
+                        event.preventDefault();
+                    }
+                });
+            }
+
+            // Toggle password requirements visibility
+            window.togglePasswordRequirements = function() {
+                const requirements = document.getElementById("passwordRequirements");
+                if (requirements.style.display === "none" || requirements.style.display === "") {
+                    requirements.style.display = "block";
+                } else {
+                    requirements.style.display = "none";
+                }
+            }
+
+            // Password match validation
+            window.validatePassword = function() {
+                const password = document.getElementById("password");
+                const confirmPassword = document.getElementById("confirmPassword");
+                if (password.value != confirmPassword.value) {
+                    confirmPassword.setCustomValidity("Passwords do not match");
+                } else {
+                    confirmPassword.setCustomValidity('');
+                }
             }
         });
-
-        // Validate email format
-        function validateEmail() {
-            const email = document.querySelector("#email").value;
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(email)) {
-                alert("Invalid email format. Please enter a valid email address.");
-                return false;
-            }
-            return true;
-        }
-
-        // Add event listener to validate password strength on form submission
-        document.querySelector("form").addEventListener("submit", function(event) {
-            const password = document.querySelector("#password").value;
-            const passwordStrength = document.querySelector("#passwordStrength").textContent;
-
-            if (!(/[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password) && /[@$!%*?&_]/.test(password) && password.length >= 8)) {
-                alert("Password must meet all the requirements listed. Click blue icon to view requirements.");
-                event.preventDefault(); // Prevent form submission
-            } else if (passwordStrength.includes("Weak") || passwordStrength.includes("Medium")) {
-                alert("Password must be 'Strong' to proceed.");
-                event.preventDefault(); // Prevent form submission
-            }
-        });
-
-        // Toggle password requirements visibility
-        function togglePasswordRequirements() {
-            const requirements = document.getElementById("passwordRequirements");
-            if (requirements.style.display === "none" || requirements.style.display === "") {
-                requirements.style.display = "block";
-            } else {
-                requirements.style.display = "none";
-            }
-        }
     </script>
 </body>
-
 </html>
